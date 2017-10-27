@@ -35,6 +35,14 @@ bool operator==(const jni::StringLiteral<Cs...>& a, const char * b)
     return std::string(a) == std::string(b);
    }
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wglobal-constructors"
+jni::StaticMethod<Test, void()> g_voidVoidStaticMethod;
+jni::Method<Test, void()> g_voidVoidMethod;
+jni::StaticField<Test, jni::jboolean> g_booleanStaticField;
+jni::Field<Test, jni::jboolean> g_booleanField;
+#pragma GCC diagnostic pop
+
 int main()
    {
     /// TypeSignature
@@ -253,6 +261,7 @@ int main()
         assert(value == jni::Unwrap(objectValue.Ptr()));
        };
 
+    g_booleanStaticField = testClass.GetStaticField<jni::jboolean>(env, booleanFieldName);
     auto booleanStaticField = testClass.GetStaticField<jni::jboolean>(env, booleanFieldName);
     auto objectStaticField  = testClass.GetStaticField<jni::Object<Test>>(env, objectFieldName);
 
@@ -314,6 +323,7 @@ int main()
            }
        };
 
+    g_booleanField = testClass.GetField<jni::jboolean>(env, booleanFieldName);
     auto booleanField = testClass.GetField<jni::jboolean>(env, booleanFieldName);
     auto objectField  = testClass.GetField<jni::Object<Test>>(env, objectFieldName);
     auto stringField  = testClass.GetField<jni::String>(env, stringFieldName);
@@ -418,6 +428,7 @@ int main()
         va_end(args);
        };
 
+    g_voidVoidStaticMethod = testClass.GetStaticMethod<void ()>(env, voidMethodName);
     auto voidVoidStaticMethod    = testClass.GetStaticMethod<void ()>(env, voidMethodName);
     auto voidBooleanStaticMethod = testClass.GetStaticMethod<void (jni::jboolean)>(env, voidMethodName);
     auto voidObjectStaticMethod  = testClass.GetStaticMethod<void (jni::Object<Test>)>(env, voidMethodName);
@@ -518,6 +529,7 @@ int main()
         va_end(args);
        };
 
+    g_voidVoidMethod    = testClass.GetMethod<void ()>(env, voidMethodName);
     auto voidVoidMethod    = testClass.GetMethod<void ()>(env, voidMethodName);
     auto voidBooleanMethod = testClass.GetMethod<void (jni::jboolean)>(env, voidMethodName);
     auto voidObjectMethod  = testClass.GetMethod<void (jni::Object<Test>)>(env, voidMethodName);
